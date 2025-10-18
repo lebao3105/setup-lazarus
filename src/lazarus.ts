@@ -8,283 +8,91 @@ import * as fs from "fs";
 
 import { Cache } from "./cache";
 
-const StableVersion = "3.6";
+const StableVersion = "4.2";
 
-const pkgs: object = {
-  win32: {
-    v3_6: "lazarus-3.6-fpc-3.2.2-win32.exe",
-    v3_4: "lazarus-3.4-fpc-3.2.2-win32.exe",
-    v3_2: "lazarus-3.2-fpc-3.2.2-win32.exe",
-    v3_0: "lazarus-3.0-fpc-3.2.2-win32.exe",
-    v2_2_6: "lazarus-2.2.6-fpc-3.2.2-win32.exe",
-    v2_2_4: "lazarus-2.2.4-fpc-3.2.2-win32.exe",
-    v2_2_2: "lazarus-2.2.2-fpc-3.2.2-win32.exe",
-    v2_2_0: "lazarus-2.2.0-fpc-3.2.2-win32.exe",
-    v2_0_12: "lazarus-2.0.12-fpc-3.2.0-win32.exe",
-    v2_0_10: "lazarus-2.0.10-fpc-3.2.0-win32.exe",
-    v2_0_8: "lazarus-2.0.8-fpc-3.0.4-win32.exe",
-    v2_0_6: "lazarus-2.0.6-fpc-3.0.4-win32.exe",
-    v2_0_4: "lazarus-2.0.4-fpc-3.0.4-win32.exe",
-    v2_0_2: "lazarus-2.0.2-fpc-3.0.4-win32.exe",
-    v2_0_0: "lazarus-2.0.0-fpc-3.0.4-win32.exe",
-    v1_8_4: "lazarus-1.8.4-fpc-3.0.4-win32.exe",
-    v1_8_2: "lazarus-1.8.2-fpc-3.0.4-win32.exe",
-    v1_8_0: "lazarus-1.8.0-fpc-3.0.4-win32.exe",
-    v1_6_4: "lazarus-1.6.4-fpc-3.0.2-win32.exe",
-    v1_6_2: "lazarus-1.6.2-fpc-3.0.0-win32.exe",
-    v1_6: "lazarus-1.6.0-fpc-3.0.0-win32.exe",
-    v1_4_4: "lazarus-1.4.4-fpc-2.6.4-win32.exe",
-    v1_4_2: "lazarus-1.4.2-fpc-2.6.4-win32.exe",
-    v1_4: "lazarus-1.4.0-fpc-2.6.4-win32.exe",
-    v1_2_6: "lazarus-1.2.6-fpc-2.6.4-win32.exe",
-    v1_2_4: "lazarus-1.2.4-fpc-2.6.4-win32.exe",
-    v1_2_2: "lazarus-1.2.2-fpc-2.6.4-win32.exe",
-    v1_2: "lazarus-1.2.0-fpc-2.6.2-win32.exe",
-    v1_0_14: "lazarus-1.0.14-fpc-2.6.2-win32.exe",
-    v1_0_12: "lazarus-1.0.12-fpc-2.6.2-win32.exe",
-  },
-  win64: {
-    v3_6: "lazarus-3.6-fpc-3.2.2-win64.exe",
-    v3_4: "lazarus-3.4-fpc-3.2.2-win64.exe",
-    v3_2: "lazarus-3.2-fpc-3.2.2-win64.exe",
-    v3_0: "lazarus-3.0-fpc-3.2.2-win64.exe",
-    v2_2_6: "lazarus-2.2.6-fpc-3.2.2-win64.exe",
-    v2_2_4: "lazarus-2.2.4-fpc-3.2.2-win64.exe",
-    v2_2_2: "lazarus-2.2.2-fpc-3.2.2-win64.exe",
-    v2_2_0: "lazarus-2.2.0-fpc-3.2.2-win64.exe",
-    v2_0_12: "lazarus-2.0.12-fpc-3.2.0-win64.exe",
-    v2_0_10: "lazarus-2.0.10-fpc-3.2.0-win64.exe",
-    v2_0_8: "lazarus-2.0.8-fpc-3.0.4-win64.exe",
-    v2_0_6: "lazarus-2.0.6-fpc-3.0.4-win64.exe",
-    v2_0_4: "lazarus-2.0.4-fpc-3.0.4-win64.exe",
-    v2_0_2: "lazarus-2.0.2-fpc-3.0.4-win64.exe",
-    v2_0_0: "lazarus-2.0.0-fpc-3.0.4-win64.exe",
-    v1_8_4: "lazarus-1.8.4-fpc-3.0.4-win64.exe",
-    v1_8_2: "lazarus-1.8.2-fpc-3.0.4-win64.exe",
-    v1_8_0: "lazarus-1.8.0-fpc-3.0.4-win64.exe",
-    v1_6_4: "lazarus-1.6.4-fpc-3.0.2-win64.exe",
-    v1_6_2: "lazarus-1.6.2-fpc-3.0.0-win64.exe",
-    v1_6: "lazarus-1.6.0-fpc-3.0.0-win64.exe",
-    v1_4_4: "lazarus-1.4.4-fpc-2.6.4-win64.exe",
-    v1_4_2: "lazarus-1.4.2-fpc-2.6.4-win64.exe",
-    v1_4: "lazarus-1.4.0-fpc-2.6.4-win64.exe",
-    v1_2_6: "lazarus-1.2.6-fpc-2.6.4-win64.exe",
-    v1_2_4: "lazarus-1.2.4-fpc-2.6.4-win64.exe",
-    v1_2_2: "lazarus-1.2.2-fpc-2.6.4-win64.exe",
-    v1_2: "lazarus-1.2.0-fpc-2.6.2-win64.exe",
-    v1_0_14: "lazarus-1.0.14-fpc-2.6.2-win64.exe",
-    v1_0_12: "lazarus-1.0.12-fpc-2.6.2-win64.exe",
-  },
-  linux: {
-    v3_6: {
-      laz: "lazarus-project_3.6.0-0_amd64.deb",
-      fpc: "fpc-laz_3.2.2-210709_amd64.deb",
-      fpcsrc: "fpc-src_3.2.2-210709_amd64.deb",
-    },
-    v3_4: {
-      laz: "lazarus-project_3.4.0-0_amd64.deb",
-      fpc: "fpc-laz_3.2.2-210709_amd64.deb",
-      fpcsrc: "fpc-src_3.2.2-210709_amd64.deb",
-    },
-    v3_2: {
-      laz: "lazarus-project_3.2.0-0_amd64.deb",
-      fpc: "fpc-laz_3.2.2-210709_amd64.deb",
-      fpcsrc: "fpc-src_3.2.2-210709_amd64.deb",
-    },
-    v3_0: {
-      laz: "lazarus-project_3.0.0-0_amd64.deb",
-      fpc: "fpc-laz_3.2.2-210709_amd64.deb",
-      fpcsrc: "fpc-src_3.2.2-210709_amd64.deb",
-    },
-    v2_2_6: {
-      laz: "lazarus-project_2.2.6-0_amd64.deb",
-      fpc: "fpc-laz_3.2.2-210709_amd64.deb",
-      fpcsrc: "fpc-src_3.2.2-210709_amd64.deb",
-    },
-    v2_2_4: {
-      laz: "lazarus-project_2.2.4-0_amd64.deb",
-      fpc: "fpc-laz_3.2.2-210709_amd64.deb",
-      fpcsrc: "fpc-src_3.2.2-210709_amd64.deb",
-    },
-    v2_2_2: {
-      laz: "lazarus-project_2.2.2-0_amd64.deb",
-      fpc: "fpc-laz_3.2.2-210709_amd64.deb",
-      fpcsrc: "fpc-src_3.2.2-210709_amd64.deb",
-    },
-    v2_2_0: {
-      laz: "lazarus-project_2.2.0-0_amd64.deb",
-      fpc: "fpc-laz_3.2.2-210709_amd64.deb",
-      fpcsrc: "fpc-src_3.2.2-210709_amd64.deb",
-    },
-    v2_0_12: {
-      laz: "lazarus-project_2.0.12-0_amd64.deb",
-      fpc: "fpc-laz_3.2.0-1_amd64.deb",
-      fpcsrc: "fpc-src_3.2.0-1_amd64.deb",
-    },
-    v2_0_10: {
-      laz: "lazarus-project_2.0.10-0_amd64.deb",
-      fpc: "fpc-laz_3.2.0-1_amd64.deb",
-      fpcsrc: "fpc-src_3.2.0-1_amd64.deb",
-    },
-    v2_0_8: {
-      laz: "lazarus-project_2.0.8-0_amd64.deb",
-      fpc: "fpc-laz_3.0.4-1_amd64.deb",
-      fpcsrc: "fpc-src_3.0.4-2_amd64.deb",
-    },
-    v2_0_6: {
-      laz: "lazarus-project_2.0.6-0_amd64.deb",
-      fpc: "fpc-laz_3.0.4-1_amd64.deb",
-      fpcsrc: "fpc-src_3.0.4-2_amd64.deb",
-    },
-    v2_0_4: {
-      laz: "lazarus-project_2.0.4-0_amd64.deb",
-      fpc: "fpc-laz_3.0.4-1_amd64.deb",
-      fpcsrc: "fpc-src_3.0.4-2_amd64.deb",
-    },
-    v2_0_2: {
-      laz: "lazarus-project_2.0.2-0_amd64.deb",
-      fpc: "fpc-laz_3.0.4-1_amd64.deb",
-      fpcsrc: "fpc-src_3.0.4-2_amd64.deb",
-    },
-    v2_0_0: {
-      laz: "lazarus-project_2.0.0-0_amd64.deb",
-      fpc: "fpc-laz_3.0.4-1_amd64.deb",
-      fpcsrc: "fpc-src_3.0.4-2_amd64.deb",
-    },
-    v1_8_4: {
-      laz: "lazarus-project_1.8.4-0_amd64.deb",
-      fpc: "fpc_3.0.4-3_amd64.deb",
-      fpcsrc: "fpc-src_3.0.4-2_amd64.deb",
-    },
-    v1_8_2: {
-      laz: "lazarus-project_1.8.2-0_amd64.deb",
-      fpc: "fpc_3.0.4-2_amd64.deb",
-      fpcsrc: "fpc-src_3.0.4-2_amd64.deb",
-    },
-    v1_8_0: {
-      laz: "lazarus-project_1.8.0-1_amd64.deb",
-      fpc: "fpc_3.0.4-2_amd64.deb",
-      fpcsrc: "fpc-src_3.0.4-2_amd64.deb",
-    },
-    v1_6_4: {
-      laz: "lazarus-project_1.6.4-0_amd64.deb",
-      fpc: "fpc_3.0.2-170225_amd64.deb",
-      fpcsrc: "fpc-src_3.0.2-170225_amd64.deb",
-    },
-    v1_6_2: {
-      laz: "lazarus-project_1.6.2-1_amd64.deb",
-      fpc: "fpc_3.0.0-151205_amd64.deb",
-      fpcsrc: "fpc-src_3.0.0-151205_amd64.deb",
-    },
-    v1_6: {
-      laz: "lazarus_1.6-0_amd64.deb",
-      fpc: "fpc_3.0.0-151205_amd64.deb",
-      fpcsrc: "fpc-src_3.0.0-151205_amd64.deb",
-    },
-    v1_4_4: {
-      laz: "lazarus_1.4.4-0_amd64.deb",
-      fpc: "fpc_2.6.4-150228_amd64.deb",
-      fpcsrc: "fpc-src_2.6.4-150228_amd64.deb",
-    },
-    v1_4_2: {
-      laz: "lazarus_1.4.2-0_amd64.deb",
-      fpc: "fpc_2.6.4-150228_amd64.deb",
-      fpcsrc: "fpc-src_2.6.4-150228_amd64.deb",
-    },
-    v1_4: {
-      laz: "lazarus_1.4.0-0_amd64.deb",
-      fpc: "fpc_2.6.4-150228_amd64.deb",
-      fpcsrc: "fpc-src_2.6.4-150228_amd64.deb",
-    },
-    v1_2_6: {
-      laz: "lazarus_1.2.6-0_amd64.deb",
-      fpc: "fpc_2.6.4-140420_amd64.deb",
-      fpcsrc: "fpc-src_2.6.4-140420_amd64.deb",
-    },
-    v1_2_4: {
-      laz: "lazarus_1.2.4-0_amd64.deb",
-      fpc: "fpc_2.6.4-140420_amd64.deb",
-      fpcsrc: "fpc-src_2.6.4-140420_amd64.deb",
-    },
-    v1_2_2: {
-      laz: "lazarus_1.2.2-0_amd64.deb",
-      fpc: "fpc_2.6.4-140420_amd64.deb",
-      fpcsrc: "fpc-src_2.6.4-140420_amd64.deb",
-    },
-    v1_2: {
-      laz: "lazarus_1.2.0-0_amd64.deb",
-      fpc: "fpc_2.6.2-0_amd64.deb",
-      fpcsrc: "fpc-src_2.6.2-0_amd64.deb",
-    },
-    v1_0_14: {
-      laz: "lazarus_1.0.14-0_amd64.deb",
-      fpc: "fpc_2.6.2-0_amd64.deb",
-      fpcsrc: "fpc-src_2.6.2-0_amd64.deb",
-    },
-    v1_0_12: {
-      laz: "lazarus_1.0.12-0_amd64.deb",
-      fpc: "fpc_2.6.2-0_amd64.deb",
-      fpcsrc: "fpc-src_2.6.2-0_amd64.deb",
-    },
-  },
-  darwin: {
-    v3_6: {
-      laz: "Lazarus-3.6-macosx-x86_64.pkg",
-      fpc: "fpc-3.2.2.intelarm64-macosx.dmg",
-      fpcsrc: "fpc-src-3.2.2-20210709-macosx.dmg",
-    },
-    v3_4: {
-      laz: "Lazarus-3.4-macosx-x86_64.pkg",
-      fpc: "fpc-3.2.2.intelarm64-macosx.dmg",
-      fpcsrc: "fpc-src-3.2.2-20210709-macosx.dmg",
-    },
-    v3_2: {
-      laz: "Lazarus-3.2-macosx-x86_64.pkg",
-      fpc: "fpc-3.2.2.intelarm64-macosx.dmg",
-      fpcsrc: "fpc-src-3.2.2-20210709-macosx.dmg",
-    },
-    v3_0: {
-      laz: "Lazarus-3.0-macosx-x86_64.pkg",
-      fpc: "fpc-3.2.2.intelarm64-macosx.dmg",
-      fpcsrc: "fpc-src-3.2.2-20210709-macosx.dmg",
-    },
-    v2_2_6: {
-      laz: "Lazarus-2.2.6-0-x86_64-macosx.pkg",
-      fpc: "fpc-3.2.2.intelarm64-macosx.dmg",
-      fpcsrc: "fpc-src-3.2.2-20210709-macosx.dmg",
-    },
-    v2_2_4: {
-      laz: "Lazarus-2.2.4-0-x86_64-macosx.pkg",
-      fpc: "fpc-3.2.2.intelarm64-macosx.dmg",
-      fpcsrc: "fpc-src-3.2.2-20210709-macosx.dmg",
-    },
-    v2_2_2: {
-      laz: "Lazarus-2.2.2-0-x86_64-macosx.pkg",
-      fpc: "fpc-3.2.2.intelarm64-macosx.dmg",
-      fpcsrc: "fpc-src-3.2.2-20210709-macosx.dmg",
-    },
-    v2_2_0: {
-      laz: "Lazarus-2.2.0-0-x86_64-macosx.pkg",
-      fpc: "fpc-3.2.2.intelarm64-macosx.dmg",
-      fpcsrc: "fpc-src-3.2.2-20210709-macosx.dmg",
-    },
-    v2_0_12: {
-      laz: "Lazarus-2.0.12-x86_64-macosx.pkg",
-      fpc: "fpc-3.2.0.intel-macosx.dmg",
-      fpcsrc: "fpc-src-3.2.0-2-laz.pkg",
-    },
-    v2_0_10: {
-      laz: "Lazarus-2.0.10-x86_64-macosx.pkg",
-      fpc: "fpc-3.2.0.intel-macosx.dmg",
-      fpcsrc: "fpc-src-3.2.0-2-laz.pkg",
-    },
-    v2_0_8: {
+function findFPCVersion(ver: string): string {
+  if (ver.startsWith("2.0.1")) { // 2.0.10 and 2.0.12
+    return "3.2.0";
+  }
+
+  if (ver.startsWith("2.0.") || ver.startsWith("1.8")) {
+    return "3.0.4";
+  }
+
+  if (ver === "1.6.4") return "3.0.2";
+
+  if (ver.startsWith("1.6")) return "3.0.0";
+
+  if (ver === "1.2.0" || ver.startsWith("1.0")) return "2.6.2";
+
+  if (ver.startsWith("1.4") || ver.startsWith("1.2"))
+    return "2.6.4";
+
+  return "3.2.2";
+}
+
+function createLazarusFileName(ver: string): object | string {
+  const p = os.platform();
+  const fpcver = findFPCVersion(ver);
+
+  if (p.startsWith("win")) {
+    return `lazarus-${ver}-fpc-${fpcver}-${p}.exe`;
+  }
+
+  var fpcverSuffix: string = "";
+
+  if (p === "darwin") {
+    if (fpcver === "3.2.0")
+      fpcverSuffix = "2";
+    else if (fpcver === "3.2.2")
+      fpcverSuffix = "20210709";
+    // ignore older versions of FPC and Lazarus
+  }
+  else {
+    switch (fpcver) {
+      case "3.2.2":
+        fpcverSuffix = "210709";
+        break;
+      case "3.2.0":
+        fpcverSuffix = "1";
+        break;
+      case "3.0.4":
+        fpcverSuffix = "2";
+        break;
+      case "3.0.2":
+        fpcverSuffix = "170225";
+        break;
+      case "3.0.0":
+        fpcverSuffix = "151205";
+        break;
+      case "2.6.4":
+        fpcverSuffix =
+          ver.startsWith("1.2.") && ver !== "1.2.0" ? "140420" : "150228";
+        break;
+      case "2.6.2":
+        fpcverSuffix = "0";
+        break;
+    }
+  }
+
+  if (p === "darwin") {
+    return ver !== "2.0.8" ? {
+      laz: `Lazarus-${ver}-macosx-${p}.pkg`,
+      fpc: `fpc-${fpcver}.intel${fpcver.startsWith("2.0") ? "" : "arm64"}-macosx.dmg`,
+      fpcsrc: `fpc-src-${fpcver}-${fpcverSuffix}-laz.${ver.startsWith("2.0") ? "pkg" : "dmg"}`
+    } : {
       laz: "LazarusIDE-2.0.8-macos-x86_64.pkg",
-      fpc: "fpc-3.0.4-macos-x86_64-laz-2.pkg",
-      fpcsrc: "fpc-src-3.0.4-laz.pkg",
-    },
-  },
-};
+      fpc: "fpc-3.0.4-macos-x86_64-laz-2.dmg",
+      fpcsrc: "fpc-src-3.0.4-laz.pkg"
+    };
+  } else {
+    return {
+      laz: `lazarus-project_${ver}-0_amd64.deb`,
+      fpc: `fpc${!ver.startsWith("1.") ? "_" : "-laz-"}${fpcver}-${fpcver === "3.0.4" ? "1" : fpcverSuffix}_amd64.deb`,
+      fpcsrc: `fpc-src_${fpcver}-${fpcverSuffix}_amd64.deb`
+    };
+  }
+}
 
 export class Lazarus {
   private _Platform: string = os.platform();
@@ -312,40 +120,11 @@ export class Lazarus {
             // Perform a repository update
             await exec("sudo apt update");
             // Install Lazarus from the Ubuntu repository
-            await exec("sudo apt install -y lazarus");
+            await exec("sudo apt install -y lazarus --no-install-recommends");
             break;
           case "darwin":
-            // Perform a repository update
-            await exec("brew update");
-            // Install Lazarus using homebrew
-            await exec("brew install lazarus");
-
-            // For 2.0.10 and older, lazbuild symlink is /Library/Lazarus/lazbuild
-            // For 2.0.12, lazbuild symlink is /Applications/Lazarus/lazbuild
-            // Update the symlink to lazbuild
-            const lazLibPath = "/Library/Lazarus/lazbuild";
-            const lazAppPath = "/Applications/Lazarus/lazbuild";
-            try {
-              if (fs.existsSync(`${lazLibPath}`)) {
-                core.info(
-                  `installLazarus - Do not need to update lazbuild symlink`
-                );
-              } else if (fs.existsSync(`${lazAppPath}`)) {
-                core.info(
-                  `installLazarus - Updating lazbuild symlink to ${lazAppPath}`
-                );
-                // Remove bad symlink
-                await exec(`rm -rf /usr/local/bin/lazbuild`);
-                // Add good symlink
-                await exec(`ln -s ${lazAppPath} /usr/local/bin/lazbuild`);
-              } else {
-                throw new Error(
-                  `Could not find lazbuild in ${lazLibPath} or ${lazAppPath}`
-                );
-              }
-            } catch (error) {
-              throw error as Error;
-            }
+            // TODO: FPC packages are being disabled in 2026
+            // fpc-src-laz is outdated : won't work on ARM64 machines
             break;
           case "win32":
             this._LazarusVersion = StableVersion;
@@ -366,50 +145,17 @@ export class Lazarus {
           this._LazarusVersion + "-" + this._Arch + "-" + this._Platform;
         await this._downloadLazarus();
         break;
-      case "3.6":
-      case "3.4":
-      case "3.2":
-      case "3.0":
-      case "2.2.6":
-      case "2.2.4":
-      case "2.2.2":
-      case "2.2.0":
-      case "2.0.12":
-      case "2.0.10":
-      case "2.0.8":
+      default:
+        if (this._Platform == "darwin") {
+          if (this._LazarusVersion.startsWith("2.0") ||
+              this._LazarusVersion.startsWith("1.")) {
+                throw new Error(
+                  "GitHub runners do not support Lazarus below 2.0.8 on macos"
+                );
+              }
+        }
         await this._downloadLazarus();
         break;
-      case "2.0.6":
-      case "2.0.4":
-      case "2.0.2":
-      case "2.0.0":
-      case "1.8.4":
-      case "1.8.2":
-      case "1.8.0":
-      case "1.6.4":
-      case "1.6.2":
-      case "1.6":
-      case "1.4.4":
-      case "1.4.2":
-      case "1.4":
-      case "1.2.6":
-      case "1.2.4":
-      case "1.2.2":
-      case "1.2":
-      case "1.0.14":
-      case "1.0.12":
-        if (this._Platform == "darwin") {
-          throw new Error(
-            "GitHub runners do not support Lazarus below 2.0.8 on macos"
-          );
-        } else {
-          await this._downloadLazarus();
-        }
-        break;
-      default:
-        throw new Error(
-          `getLazarus - Version not available: ${this._LazarusVersion}`
-        );
     }
   }
 
@@ -422,6 +168,7 @@ export class Lazarus {
 
     switch (this._Platform) {
       case "win32":
+      case "win64": // < this was not included before. Why?
         // Get the URL of the file to download
         let downloadURL: string = this._getPackageURL("laz");
         core.info(`_downloadLazarus - Downloading ${downloadURL}`);
@@ -463,15 +210,14 @@ export class Lazarus {
 
           // Add the path to fpc.exe to the runner's global path
           // TODO: This is very sketchy and may break in the future. Needs better implementation!
-          let lazVer = "v" + this._LazarusVersion.replace(/\./gi, "_");
-          let parts = pkgs["win64"][lazVer].split("-");
+          let parts = (createLazarusFileName(this._LazarusVersion) as string).split("-");
           let fpc_version = parts[3];
           let fpcDir = path.join(
             lazarusDir,
             "fpc",
             fpc_version,
             "bin",
-            "x86_64-win64"
+            `x86_64-${this._Platform}` //?
           );
           core.addPath(fpcDir);
           core.info(`_downloadLazarus - Adding '${fpcDir}' to PATH`);
@@ -767,29 +513,24 @@ export class Lazarus {
   private _getPackageURL(pkg: string): string {
     let result: string = "";
     // Replace periods with undescores due to JSON borking with periods or dashes
-    let lazVer = "v" + this._LazarusVersion.replace(/\./gi, "_");
+    //let lazVer = "v" + this._LazarusVersion.replace(/\./gi, "_");
     switch (this._Platform) {
       case "win32":
         if (this._Arch == "x64") {
           result = `https://sourceforge.net/projects/lazarus/files/Lazarus%20Windows%2064%20bits/Lazarus%20${this._LazarusVersion}/`;
-          result += pkgs["win64"][lazVer];
         } else {
           result = `https://sourceforge.net/projects/lazarus/files/Lazarus%20Windows%2032%20bits/Lazarus%20${this._LazarusVersion}/`;
-          result += pkgs[this._Platform][lazVer];
         }
+        result += createLazarusFileName(this._LazarusVersion);
         break;
-      case "linux":
-        result = `https://sourceforge.net/projects/lazarus/files/Lazarus%20Linux%20amd64%20DEB/Lazarus%20${this._LazarusVersion}/`;
-        result += pkgs[this._Platform][lazVer][pkg];
+        case "linux":
+          result = `https://sourceforge.net/projects/lazarus/files/Lazarus%20Linux%20amd64%20DEB/Lazarus%20${this._LazarusVersion}/`;
+          result += createLazarusFileName(this._LazarusVersion)[pkg];
         break;
       case "darwin":
         result = `https://sourceforge.net/projects/lazarus/files/Lazarus%20macOS%20x86-64/Lazarus%20${this._LazarusVersion}/`;
-        result += pkgs[this._Platform][lazVer][pkg];
+        result += createLazarusFileName(this._LazarusVersion)[pkg];
         break;
-      default:
-        throw new Error(
-          `getPackageName - Platform not implemented yet ${this._Platform}`
-        );
     }
 
     return result;
