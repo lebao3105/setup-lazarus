@@ -36,7 +36,7 @@ function createLazarusFileName(ver: string): object | string {
   const fpcver = findFPCVersion(ver);
 
   if (p.startsWith("win")) {
-    return `lazarus-${ver}-fpc-${fpcver}-${p}.exe`;
+    return `lazarus-${ver}-fpc-${fpcver}-${os.arch()}.exe`;
   }
 
   var fpcverSuffix: string = "";
