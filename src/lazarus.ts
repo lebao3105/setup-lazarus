@@ -122,10 +122,6 @@ export class Lazarus {
             // Install Lazarus from the Ubuntu repository
             await exec("sudo apt install -y lazarus --no-install-recommends");
             break;
-          case "darwin":
-            // TODO: FPC packages are being disabled in 2026
-            // fpc-src-laz is outdated : won't work on ARM64 machines
-            break;
           case "win32":
             this._LazarusVersion = StableVersion;
             this._Cache.key =
@@ -147,12 +143,13 @@ export class Lazarus {
         break;
       default:
         if (this._Platform == "darwin") {
-          if (this._LazarusVersion.startsWith("2.0") ||
-              this._LazarusVersion.startsWith("1.")) {
-                throw new Error(
-                  "GitHub runners do not support Lazarus below 2.0.8 on macos"
-                );
-              }
+          if ((this._LazarusVersion.startsWith("2.0") &&
+            this._LazarusVersion !== "2.0.8") ||
+            this._LazarusVersion.startsWith("1.")) {
+            throw new Error(
+              "GitHub runners do not support Lazarus below 2.0.8 on macos"
+            );
+          }
         }
         await this._downloadLazarus();
         break;
@@ -522,9 +519,9 @@ export class Lazarus {
         }
         result += createLazarusFileName(this._LazarusVersion);
         break;
-        case "linux":
-          result = `https://sourceforge.net/projects/lazarus/files/Lazarus%20Linux%20amd64%20DEB/Lazarus%20${this._LazarusVersion}/`;
-          result += createLazarusFileName(this._LazarusVersion)[pkg];
+      case "linux":
+        result = `https://sourceforge.net/projects/lazarus/files/Lazarus%20Linux%20amd64%20DEB/Lazarus%20${this._LazarusVersion}/`;
+        result += createLazarusFileName(this._LazarusVersion)[pkg];
         break;
       case "darwin":
         result = `https://sourceforge.net/projects/lazarus/files/Lazarus%20macOS%20x86-64/Lazarus%20${this._LazarusVersion}/`;

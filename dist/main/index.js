@@ -307,10 +307,6 @@ class Lazarus {
                         // Install Lazarus from the Ubuntu repository
                         await (0, exec_1.exec)("sudo apt install -y lazarus --no-install-recommends");
                         break;
-                    case "darwin":
-                        // TODO: FPC packages are being disabled in 2026
-                        // fpc-src-laz is outdated : won't work on ARM64 machines
-                        break;
                     case "win32":
                         this._LazarusVersion = StableVersion;
                         this._Cache.key =
@@ -330,7 +326,8 @@ class Lazarus {
                 break;
             default:
                 if (this._Platform == "darwin") {
-                    if (this._LazarusVersion.startsWith("2.0") ||
+                    if ((this._LazarusVersion.startsWith("2.0") &&
+                        this._LazarusVersion !== "2.0.8") ||
                         this._LazarusVersion.startsWith("1.")) {
                         throw new Error("GitHub runners do not support Lazarus below 2.0.8 on macos");
                     }
@@ -680,13 +677,7 @@ const core = __importStar(__nccwpck_require__(7484));
 const inst = __importStar(__nccwpck_require__(8328));
 async function run() {
     try {
-        // `lazarus-version` input defined in action metadata file
-        let lazarusVersion = core.getInput("lazarus-version");
-        // `include-packages` input defined in action metadata file
-        let includePackages = core.getInput("include-packages");
-        // `with-cache` input defined in action metadata file
-        let withCache = core.getInput("with-cache") == "true";
-        let Installer = new inst.Installer(lazarusVersion, includePackages.split(","), withCache);
+        let Installer = new inst.Installer(core.getInput("lazarus-version"), core.getInput("include-packages").split(","), core.getInput("with-cache") == "true");
         await Installer.install();
     }
     catch (error) {

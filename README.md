@@ -94,6 +94,7 @@ At the moment this action only supports:
 - Windows (win32-x64)
 - Linux (linux-x64)
 - macOS (darwin-x64)
+- macOS ARM64
 
 ### IMPORTANT
 
@@ -159,3 +160,8 @@ jobs:
       - name: Run the Unit Tests Application
         run: bin/testconsoleapplication "--all" "--format=plain"
 ```
+
+## TODO
+
+* Set `FPCDIR` environment variable for FPC source code
+* Fix macOS support: FPC packages on Homebrew are being disabled & outdated
