@@ -229,7 +229,7 @@ function createLazarusFileName(ver) {
     const p = os.platform();
     const fpcver = findFPCVersion(ver);
     if (p.startsWith("win")) {
-        return `lazarus-${ver}-fpc-${fpcver}-${p}.exe`;
+        return `lazarus-${ver}-fpc-${fpcver}-${os.arch() == "x64" ? "win64" : "win32"}.exe`;
     }
     var fpcverSuffix = "";
     if (p === "darwin") {
@@ -347,7 +347,6 @@ class Lazarus {
         }
         switch (this._Platform) {
             case "win32":
-            case "win64": // < this was not included before. Why?
                 // Get the URL of the file to download
                 let downloadURL = this._getPackageURL("laz");
                 core.info(`_downloadLazarus - Downloading ${downloadURL}`);
@@ -373,8 +372,7 @@ class Lazarus {
                     // TODO: This is very sketchy and may break in the future. Needs better implementation!
                     let parts = createLazarusFileName(this._LazarusVersion).split("-");
                     let fpc_version = parts[3];
-                    let fpcDir = path.join(lazarusDir, "fpc", fpc_version, "bin", `x86_64-${this._Platform}` //?
-                    );
+                    let fpcDir = path.join(lazarusDir, "fpc", fpc_version, "bin", `x86_64-${os.arch() == "x64" ? "win64" : "win32"}`);
                     core.addPath(fpcDir);
                     core.info(`_downloadLazarus - Adding '${fpcDir}' to PATH`);
                 }

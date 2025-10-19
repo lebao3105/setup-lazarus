@@ -36,7 +36,7 @@ function createLazarusFileName(ver: string): object | string {
   const fpcver = findFPCVersion(ver);
 
   if (p.startsWith("win")) {
-    return `lazarus-${ver}-fpc-${fpcver}-win${os.arch().slice(1)}.exe`;
+    return `lazarus-${ver}-fpc-${fpcver}-${os.arch() == "x64" ? "win64" : "win32"}.exe`;
   }
 
   var fpcverSuffix: string = "";
@@ -168,7 +168,6 @@ export class Lazarus {
 
     switch (this._Platform) {
       case "win32":
-      case "win64": // < this was not included before. Why?
         // Get the URL of the file to download
         let downloadURL: string = this._getPackageURL("laz");
         core.info(`_downloadLazarus - Downloading ${downloadURL}`);
@@ -217,7 +216,7 @@ export class Lazarus {
             "fpc",
             fpc_version,
             "bin",
-            `x86_64-${this._Platform}` //?
+            `x86_64-${os.arch() == "x64" ? "win64" : "win32"}`
           );
           core.addPath(fpcDir);
           core.info(`_downloadLazarus - Adding '${fpcDir}' to PATH`);
