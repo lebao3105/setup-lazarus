@@ -216,6 +216,11 @@ export class Lazarus {
             `x86_64-${os.arch() == "x64" ? "win64" : "win32"}`
           );
           core.addPath(fpcDir);
+          core.exportVariable('FPCDIR', path.join(
+            lazarusDir,
+            "fpc",
+            fpc_version,
+            "source");
           core.info(`_downloadLazarus - Adding '${fpcDir}' to PATH`);
         } catch (error) {
           throw error as Error;
