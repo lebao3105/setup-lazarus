@@ -2,14 +2,22 @@ name: build
 
 on:
   pull_request:
-  push:
     paths:
-    - *.json
-    - src/*.ts
+    - "*.json"
+    - "src/*.ts"
 
     branches:
-      - master
-      - releases/*
+      - "master"
+      - "releases/*"
+      
+  push:
+    paths:
+    - "*.json"
+    - "src/*.ts"
+
+    branches:
+      - "master"
+      - "releases/*"
       
   workflow_dispatch:
 
