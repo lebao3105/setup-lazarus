@@ -38,7 +38,7 @@ jobs:
       - run: |
           npm update
           npm ci
-          npm build
+          npm run build
       
       - uses: stefanzweifel/git-auto-commit-action@v7
         with:
