@@ -10,6 +10,8 @@ on:
     branches:
       - master
       - releases/*
+      
+  workflow_dispatch:
 
 jobs:
   build:
