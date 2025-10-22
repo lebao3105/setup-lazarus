@@ -25,6 +25,13 @@ jobs:
           node-version: 20.x
           cache: 'npm'
 
-      - run: npm ci
-
-      - run: npm run build
+      - run: |
+          npm update
+          npm ci
+          npm build
+      
+      - uses: stefanzweifel/git-auto-commit-action@v7
+        with:
+          commit_message: Automated dist/ update
+          skip_fetch: true
+          skip_checkout: true

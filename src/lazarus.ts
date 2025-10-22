@@ -171,7 +171,6 @@ export class Lazarus {
 
         let downloadPath_WIN: string;
 
-        try {
           if (cacheRestored) {
             // Use cached version
             downloadPath_WIN = path.join(
@@ -216,15 +215,14 @@ export class Lazarus {
             `x86_64-${os.arch() == "x64" ? "win64" : "win32"}`
           );
           core.addPath(fpcDir);
+          core.info(`_downloadLazarus - Added '${fpcDir}' to PATH`);
+          
+          // fpmake will check for units in
+          // %FPCSRC%\units\<target>\<package>
+          // Confirmed by a fresh installation of Lazarus.
+          // The same goes to other OSes.
           core.exportVariable('FPCDIR', path.join(
-            lazarusDir,
-            "fpc",
-            fpc_version,
-            "source"));
-          core.info(`_downloadLazarus - Adding '${fpcDir}' to PATH`);
-        } catch (error) {
-          throw error as Error;
-        }
+            lazarusDir, "fpc", fpc_version));
         break;
       case "linux":
         // Perform a repository update
@@ -235,7 +233,6 @@ export class Lazarus {
         // Get the URL for Free Pascal Source
         let downloadFPCSRCURL: string = this._getPackageURL("fpcsrc");
         core.info(`_downloadLazarus - Downloading ${downloadFPCSRCURL}`);
-        try {
           if (cacheRestored) {
             // Use cached version
             downloadPath_LIN = path.join(
@@ -255,9 +252,6 @@ export class Lazarus {
           }
           // Install the package
           await exec(`sudo apt install -y ${downloadPath_LIN}`);
-        } catch (error) {
-          throw error as Error;
-        }
 
         // Get the URL for Free Pascal's compiler
         let downloadFPCURL: string = this._getPackageURL("fpc");
