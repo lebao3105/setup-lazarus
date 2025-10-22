@@ -220,7 +220,7 @@ export class Lazarus {
             lazarusDir,
             "fpc",
             fpc_version,
-            "source");
+            "source"));
           core.info(`_downloadLazarus - Adding '${fpcDir}' to PATH`);
         } catch (error) {
           throw error as Error;
